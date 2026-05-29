@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReportIQ – Azentio Digital Banking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       TOP BAR
+  ════════════════════════════════════════════ -->
+  <header class="topbar" role="banner">
+
+    <a class="topbar-logo" href="#" title="Azentio home">
+      <img src="images/azentio_logo.svg" alt="Azentio"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="topbar-logo-fallback" style="display:none" aria-hidden="true">
+        <div class="arch">A</div>
+        <span>azentio</span>
+      </div>
+    </a>
+
+    <div class="topbar-divider" aria-hidden="true"></div>
+
+    <div class="topbar-appname">
+      <div class="topbar-appname-icon" aria-hidden="true">
+        <i class="ti ti-report-analytics"></i>
+      </div>
+      <span class="topbar-appname-label">ReportIQ</span>
+    </div>
+
+    <div class="topbar-divider" aria-hidden="true"></div>
+
+    <span class="topbar-title">Digital Banking · Reporting Workspace</span>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="resetWorkspace()" aria-label="Start a new report">
+        <i class="ti ti-refresh" aria-hidden="true"></i> New Report
+      </button>
+      <!-- Favourites button with live count badge -->
+      <button class="topbar-btn" onclick="openTemplates()" aria-label="Browse report templates">
+        <i class="ti ti-layout-grid" aria-hidden="true"></i> Templates
+      </button>
+      <button class="topbar-btn topbar-btn-fav" onclick="openFavourites()" aria-label="View saved favourites" id="btn-topbar-fav">
+        <i class="ti ti-heart" aria-hidden="true"></i> Favourites
+        <span class="fav-count-badge hidden" id="fav-topbar-count">0</span>
+      </button>
+      <div class="topbar-avatar" role="img" title="Sarika Bagwe" aria-label="Signed in as Sarika Bagwe">SD</div>
+    </div>
+
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       THREE-PANEL WORKSPACE
+  ════════════════════════════════════════════ -->
+  <main class="workspace" role="main">
+
+    <!-- ── LEFT: Prompt / Chat ─────────────────── -->
+    <section class="panel" id="panel-left" aria-label="Prompt and chat interface">
+
+      <div class="panel-header">
+        <i class="ti ti-message-circle" style="font-size:14px; color:var(--az-green)" aria-hidden="true"></i>
+        <span class="panel-header-title">Prompt</span>
+        <span class="panel-header-badge hidden" id="chat-badge" aria-live="polite">Guided</span>
+      </div>
+
+      <div class="chat-empty" id="chat-empty">
+        <div class="chat-empty-icon" aria-hidden="true"><i class="ti ti-sparkles"></i></div>
+        <h3>What report would you like to generate today?</h3>
+        <p>Type your request in natural language — or start from a template.</p>
+        <div class="chips" style="margin-top:2px" role="list" aria-label="Quick-start options">
+          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Account statement')" onkeydown="if(event.key==='Enter')quickStart('Account statement')"><i class="ti ti-file-text" aria-hidden="true"></i> Account statement</span>
+          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Transaction summary')" onkeydown="if(event.key==='Enter')quickStart('Transaction summary')"><i class="ti ti-list" aria-hidden="true"></i> Transaction summary</span>
+          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Balance report')" onkeydown="if(event.key==='Enter')quickStart('Balance report')"><i class="ti ti-wallet" aria-hidden="true"></i> Balance report</span>
+          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Spending analysis')" onkeydown="if(event.key==='Enter')quickStart('Spending analysis')"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending analysis</span>
+        </div>
+        <div style="margin-top:14px;width:100%;border-top:1px solid var(--color-border);padding-top:12px">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-muted);margin-bottom:5px">Popular templates</div>
+          <div style="display:flex;flex-direction:column;gap:4px;width:100%">
+            <button class="tmpl-quick-btn" onclick="applyTemplate('tmpl-monthly-stmt')"><i class="ti ti-file-text" aria-hidden="true"></i> Monthly Account Statement <span class="tmpl-quick-tag">PDF</span></button>
+            <button class="tmpl-quick-btn" onclick="applyTemplate('tmpl-monthly-tx')"><i class="ti ti-list" aria-hidden="true"></i> Monthly Transaction Summary <span class="tmpl-quick-tag">Excel</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-messages hidden" id="chat-messages" aria-live="polite" aria-label="Conversation"></div>
+
+      <!-- Browse all templates — anchored above input, visible in empty state only -->
+      <div class="browse-tmpl-bar" id="browse-tmpl-bar">
+        <button onclick="openTemplates()">
+          <i class="ti ti-layout-grid" aria-hidden="true"></i> Browse all templates
+          <i class="ti ti-arrow-right" aria-hidden="true" style="font-size:12px;margin-left:2px"></i>
+        </button>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <label for="chat-input" class="sr-only">Type your report request</label>
+          <textarea id="chat-input" rows="1" placeholder="Type your report request…" onkeydown="handleKey(event)" oninput="autoResize(this)" aria-label="Report request input" autofocus></textarea>
+          <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
+            <i class="ti ti-send" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── CENTER: Report Canvas ────────────────── -->
+    <section class="panel" id="panel-center" aria-label="Report canvas">
+
+      <div class="panel-header">
+        <i class="ti ti-layout-list" style="font-size:14px; color:var(--az-green)" aria-hidden="true"></i>
+        <span class="panel-header-title">Report Canvas</span>
+        <span class="panel-header-badge hidden" id="report-badge">Live</span>
+      </div>
+
+      <div class="canvas-scroll" id="canvas-scroll">
+
+        <div class="canvas-empty" id="canvas-empty">
+          <div class="canvas-empty-icon" aria-hidden="true"><i class="ti ti-file-analytics"></i></div>
+          <h2>Your report will appear here</h2>
+          <p>Start a conversation on the left to generate account statements, transaction summaries, and more.</p>
+          <div class="example-chips" role="list" aria-label="Example report types">
+            <span class="example-chip" role="listitem button" tabindex="0" onclick="quickStart('Show me last 3 months account statement')" onkeydown="if(event.key==='Enter')quickStart('Show me last 3 months account statement')">Last 3 months statement</span>
+            <span class="example-chip" role="listitem button" tabindex="0" onclick="quickStart('Transaction summary for January 2026')" onkeydown="if(event.key==='Enter')quickStart('Transaction summary for January 2026')">Jan 2026 transactions</span>
+            <span class="example-chip" role="listitem button" tabindex="0" onclick="quickStart('Credit card spending analysis')" onkeydown="if(event.key==='Enter')quickStart('Credit card spending analysis')">Credit card analysis</span>
+          </div>
+        </div>
+
+        <div class="report-container hidden" id="report-output" aria-live="polite" aria-label="Generated report"></div>
+
+      </div>
+    </section>
+
+    <!-- ── RIGHT: Contextual Actions ────────────── -->
+    <section class="panel" id="panel-right" aria-label="Report actions">
+
+      <div class="panel-header">
+        <i class="ti ti-bolt" style="font-size:14px; color:var(--az-green)" aria-hidden="true"></i>
+        <span class="panel-header-title">Actions</span>
+      </div>
+
+      <div class="right-empty" id="right-empty">
+        <i class="ti ti-click" aria-hidden="true" style="font-size:28px; color:var(--color-text-muted)"></i>
+        <p>Actions will appear once your report is generated.</p>
+      </div>
+
+      <div class="actions-scroll hidden" id="actions-panel"></div>
+
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       TEMPLATES OVERLAY PAGE
+  ════════════════════════════════════════════ -->
+  <div class="fav-overlay hidden" id="tmpl-overlay" role="dialog" aria-modal="true" aria-label="Report Templates">
+    <div class="fav-page tmpl-page">
+
+      <div class="fav-page-header">
+        <div class="fav-page-header-left">
+          <div class="fav-page-icon tmpl-icon" aria-hidden="true">
+            <i class="ti ti-layout-grid"></i>
+          </div>
+          <div>
+            <h1 class="fav-page-title">Report Templates</h1>
+            <p class="fav-page-subtitle">Pre-built templates — apply in one click</p>
+          </div>
+        </div>
+        <div class="fav-page-header-right">
+          <div class="fav-search-wrap">
+            <i class="ti ti-search fav-search-icon" aria-hidden="true"></i>
+            <input type="search" id="tmpl-search" placeholder="Search templates…" oninput="filterTemplates(this.value)" aria-label="Search templates">
+          </div>
+          <button class="fav-close-btn" onclick="closeTemplates()" aria-label="Close templates">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="fav-filter-bar" role="group" aria-label="Filter by category">
+        <button class="fav-filter-chip active" onclick="setTmplFilter('all', this)">All</button>
+        <button class="fav-filter-chip" onclick="setTmplFilter('statement', this)"><i class="ti ti-file-text" aria-hidden="true"></i> Statements</button>
+        <button class="fav-filter-chip" onclick="setTmplFilter('transaction', this)"><i class="ti ti-list" aria-hidden="true"></i> Transactions</button>
+        <button class="fav-filter-chip" onclick="setTmplFilter('balance', this)"><i class="ti ti-wallet" aria-hidden="true"></i> Balance</button>
+        <button class="fav-filter-chip" onclick="setTmplFilter('spending', this)"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending</button>
+        <button class="fav-filter-chip" onclick="setTmplFilter('tax', this)"><i class="ti ti-receipt" aria-hidden="true"></i> Tax & Audit</button>
+      </div>
+
+      <div class="fav-grid tmpl-grid" id="tmpl-grid" aria-label="Available templates"></div>
+
+      <div class="fav-empty hidden" id="tmpl-empty">
+        <div class="fav-empty-icon tmpl-empty-icon" aria-hidden="true"><i class="ti ti-layout-grid"></i></div>
+        <h2>No templates match</h2>
+        <p>Try a different search term or filter.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       FAVOURITES OVERLAY PAGE
+  ════════════════════════════════════════════ -->
+  <div class="fav-overlay hidden" id="fav-overlay" role="dialog" aria-modal="true" aria-label="My Favourites">
+
+    <div class="fav-page">
+
+      <!-- Favourites page header -->
+      <div class="fav-page-header">
+        <div class="fav-page-header-left">
+          <div class="fav-page-icon" aria-hidden="true">
+            <i class="ti ti-heart-filled"></i>
+          </div>
+          <div>
+            <h1 class="fav-page-title">My Favourites</h1>
+            <p class="fav-page-subtitle">Saved reports for quick access</p>
+          </div>
+        </div>
+        <div class="fav-page-header-right">
+          <div class="fav-search-wrap">
+            <i class="ti ti-search fav-search-icon" aria-hidden="true"></i>
+            <input type="search" id="fav-search" placeholder="Search favourites…" oninput="filterFavourites(this.value)" aria-label="Search saved reports">
+          </div>
+          <button class="fav-close-btn" onclick="closeFavourites()" aria-label="Close favourites">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="fav-filter-bar" role="group" aria-label="Filter by report type">
+        <button class="fav-filter-chip active" onclick="setFavFilter('all', this)">All</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('account statement', this)"><i class="ti ti-file-text" aria-hidden="true"></i> Statements</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('transaction summary', this)"><i class="ti ti-list" aria-hidden="true"></i> Transactions</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('balance report', this)"><i class="ti ti-wallet" aria-hidden="true"></i> Balance</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('spending analysis', this)"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending</button>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="fav-grid" id="fav-grid" aria-label="Saved reports"></div>
+
+      <!-- Empty state -->
+      <div class="fav-empty hidden" id="fav-empty">
+        <div class="fav-empty-icon" aria-hidden="true"><i class="ti ti-heart"></i></div>
+        <h2>No favourites yet</h2>
+        <p>Generate a report and tap the heart icon to save it here for quick access.</p>
+        <button class="fav-empty-cta" onclick="closeFavourites()">
+          <i class="ti ti-plus" aria-hidden="true"></i> Generate a report
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
