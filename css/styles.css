@@ -231,13 +231,20 @@ body {
 }
 
 .chat-empty {
-  flex: 1;
+  flex: 1; min-height: 0;
+  overflow: hidden;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px; padding: 24px; text-align: center;
+  align-items: center; justify-content: flex-start;
+  gap: 8px; padding: 12px 20px 10px; text-align: center;
+}
+/* small flexible spacers — just enough to centre without adding scroll */
+.chat-empty::before,
+.chat-empty::after {
+  content: ''; flex: 0 1 12px;
 }
 .chat-empty-icon {
   width: 52px; height: 52px;
+  flex-shrink: 0;
   background: var(--az-light-green-25);
   border-radius: var(--radius-lg);
   display: flex; align-items: center; justify-content: center;
@@ -355,7 +362,7 @@ body {
   color: var(--color-text-primary);
   outline: none; min-height: 20px; max-height: 80px; line-height: 1.5;
 }
-.chat-input-wrap textarea::placeholder { color: var(--color-text-muted); }
+.chat-input-wrap textarea::placeholder { color: var(--color-text-secondary); }
 
 .send-btn {
   width: 30px; height: 30px; border-radius: var(--radius-sm);
@@ -489,6 +496,7 @@ body {
 }
 .tx-table th:last-child,
 .tx-table td:last-child { text-align: right; }
+.tx-table td:nth-child(3) { text-align: left; }
 .tx-table td {
   padding: 10px 14px;
   border-bottom: 1px solid var(--color-border);
@@ -500,8 +508,9 @@ body {
 /* Category pills */
 .tx-category {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 2px 8px; border-radius: 99px;
+  padding: 3px 10px; border-radius: 99px;
   font-size: 10.5px; font-weight: 600;
+  white-space: nowrap;
 }
 .cat-salary   { background: var(--az-light-green-25); color: #0E5C44; }
 .cat-utilities { background: var(--color-info-light);  color: #1E3A8A; }
@@ -738,8 +747,9 @@ body {
   position: absolute; left: 10px;
   color: var(--color-text-muted); font-size: 14px; pointer-events: none;
 }
-#fav-search {
-  height: 34px; padding: 0 12px 0 32px;
+#fav-search,
+#tmpl-search {
+  height: 34px; padding: 0 12px 0 34px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   font-family: var(--font); font-size: 12.5px;
@@ -747,7 +757,8 @@ body {
   background: var(--az-grey); outline: none;
   width: 220px; transition: border-color 0.15s;
 }
-#fav-search:focus { border-color: var(--az-green); }
+#fav-search:focus,
+#tmpl-search:focus { border-color: var(--az-green); }
 
 .fav-close-btn {
   width: 34px; height: 34px; border-radius: var(--radius-md);
@@ -960,9 +971,32 @@ body {
 /* Template tag row */
 .tmpl-tags { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
 
+/* Browse-all-templates bar — anchored above the input */
+.browse-tmpl-bar {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.browse-tmpl-bar button {
+  width: 100%; height: 32px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: transparent; font-family: var(--font);
+  font-size: 12px; font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.browse-tmpl-bar button:hover {
+  background: var(--az-light-green-25);
+  border-style: solid; border-color: var(--az-green);
+}
+.browse-tmpl-bar button:focus-visible { outline: 2px solid var(--az-green); outline-offset: 2px; }
+
 /* Template quick-start buttons in chat empty state */
 .tmpl-quick-btn {
-  width: 100%; padding: 8px 12px;
+  width: 100%; padding: 6px 12px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   background: var(--color-surface);
