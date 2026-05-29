@@ -433,7 +433,7 @@ function renderReport(pLabel, account) {
             <tr>
               <th scope="col" style="width:90px">Date</th>
               <th scope="col">Description</th>
-              <th scope="col" style="width:110px">Category</th>
+              <th scope="col" style="width:140px">Category</th>
               <th scope="col" style="width:120px">Amount</th>
             </tr>
           </thead>
