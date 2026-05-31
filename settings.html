@@ -40,7 +40,31 @@
       <a class="topbar-btn" href="reporting-workspace.html" aria-label="Back to workspace" style="text-decoration:none">
         <i class="ti ti-arrow-left" aria-hidden="true"></i> Back to Workspace
       </a>
-      <div class="settings-topbar-avatar" role="img" aria-label="Signed in as Sarika Desai">SD</div>
+      <div class="avatar-wrap" id="settings-avatar-wrap">
+        <button class="settings-topbar-avatar" id="settings-avatar-btn"
+                onclick="toggleSettingsAvatar()"
+                aria-haspopup="true" aria-expanded="false"
+                aria-label="Account menu"
+>SD</button>
+        <div class="avatar-menu hidden" id="settings-avatar-menu" role="menu">
+          <div class="avatar-menu-profile">
+            <div class="avatar-menu-avatar">SD</div>
+            <div>
+              <div class="avatar-menu-name">Sarika Desai</div>
+              <div class="avatar-menu-email">sarika.bagwe@azentio.com</div>
+            </div>
+          </div>
+          <div class="avatar-menu-divider"></div>
+          <a class="avatar-menu-item" href="reporting-workspace.html" role="menuitem">
+            <i class="ti ti-layout-dashboard"></i> Back to Workspace
+          </a>
+          <div class="avatar-menu-divider"></div>
+          <a class="avatar-menu-item avatar-menu-logout" href="#" role="menuitem"
+             onclick="handleSettingsLogout(); return false;">
+            <i class="ti ti-logout"></i> Log out
+          </a>
+        </div>
+      </div>
     </div>
 
   </header>
@@ -50,7 +74,10 @@
 
     <!-- Sidebar nav -->
     <nav class="settings-nav" aria-label="Settings navigation">
-      <a class="settings-nav-item active" href="#report-prefs" onclick="scrollToSection('report-prefs')">
+      <a class="settings-nav-item active" href="#profile" onclick="scrollToSection('profile')">
+        <i class="ti ti-user-circle"></i> User Profile
+      </a>
+      <a class="settings-nav-item" href="#report-prefs" onclick="scrollToSection('report-prefs')">
         <i class="ti ti-adjustments-horizontal"></i> Report Preferences
       </a>
       <a class="settings-nav-item" href="#appearance" onclick="scrollToSection('appearance')">
@@ -73,6 +100,79 @@
 
     <!-- Content -->
     <main class="settings-content" role="main">
+
+      <!-- ── User Profile ── -->
+      <section class="settings-section" id="profile" aria-labelledby="profile-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-user-circle"></i></div>
+          <div>
+            <div class="settings-section-title" id="profile-title">User Profile</div>
+            <div class="settings-section-desc">Your account details and identity</div>
+          </div>
+        </div>
+
+        <!-- Avatar + name block -->
+        <div class="profile-hero">
+          <div class="profile-avatar">SD</div>
+          <div class="profile-hero-info">
+            <div class="profile-name">Sarika Desai</div>
+            <div class="profile-email">sarika.bagwe@azentio.com</div>
+            <span class="profile-role-badge">Reporting Analyst</span>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Full name</div>
+            <div class="settings-row-sub">Display name used in report headers</div>
+          </div>
+          <span class="settings-row-value">Sarika Desai</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Email address</div>
+            <div class="settings-row-sub">Corporate account linked at sign-in</div>
+          </div>
+          <span class="settings-row-value">sarika.bagwe@azentio.com</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Employee ID</div>
+            <div class="settings-row-sub">Azentio internal identifier</div>
+          </div>
+          <span class="settings-row-value">AZN-004782</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Department</div>
+            <div class="settings-row-sub">Business unit assigned to this account</div>
+          </div>
+          <span class="settings-row-value">Digital Banking – Analytics</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Role &amp; permissions</div>
+            <div class="settings-row-sub">Access level granted by your administrator</div>
+          </div>
+          <span class="settings-row-value settings-row-value--muted">Reporting Analyst · Read + Generate</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Edit profile</div>
+            <div class="settings-row-sub">Name and profile details are managed via Azentio HR portal</div>
+          </div>
+          <a class="settings-btn" href="#"
+             onclick="showToast('Redirecting to HR portal…'); return false;">
+            <i class="ti ti-external-link"></i> Go to portal
+          </a>
+        </div>
+
+      </section>
 
       <!-- ── Report Preferences ── -->
       <section class="settings-section" id="report-prefs" aria-labelledby="prefs-title">
@@ -378,6 +478,29 @@
       showToast('Session revoked.');
     }
 
+    function toggleSettingsAvatar() {
+      const menu = document.getElementById('settings-avatar-menu');
+      const btn  = document.getElementById('settings-avatar-btn');
+      const isOpen = !menu.classList.contains('hidden');
+      if (isOpen) {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('settings-avatar-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        const menu = document.getElementById('settings-avatar-menu');
+        const btn  = document.getElementById('settings-avatar-btn');
+        if (menu) menu.classList.add('hidden');
+        if (btn)  btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
     function handleSettingsLogout() {
       showToast('👋 Logging out…');
       setTimeout(() => { window.location.href = 'index.html'; }, 900);
@@ -433,7 +556,7 @@
       new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' +
       new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-    document.addEventListener('DOMContentLoaded', restorePrefs);
+    document.addEventListener('DOMContentLoaded', () => { restorePrefs(); updateActiveNav(); });
     window.addEventListener('scroll', updateActiveNav);
   </script>
 </body>

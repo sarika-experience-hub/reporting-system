@@ -8,159 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --az-dark: #16303D; --az-dark-mid: #1e4a5c;
-      --az-green: #2ED88E; --az-light-green: #55FFBE;
-      --font: 'Poppins', -apple-system, sans-serif;
-    }
-    body { font-family: var(--font); height: 100vh; display: flex; overflow: hidden; }
-
-    /* LEFT PANEL */
-    .left {
-      width: 44%; background: var(--az-dark);
-      display: flex; flex-direction: column; padding: 40px 44px;
-      position: relative; overflow: hidden;
-    }
-    .left::before {
-      content: ''; position: absolute; inset: 0;
-      background-image:
-        repeating-linear-gradient(0deg, rgba(85,255,190,0.05) 0, rgba(85,255,190,0.05) 1px, transparent 1px, transparent 36px),
-        repeating-linear-gradient(90deg, rgba(85,255,190,0.05) 0, rgba(85,255,190,0.05) 1px, transparent 1px, transparent 36px);
-      pointer-events: none;
-    }
-    .left::after {
-      content: ''; position: absolute; bottom: -120px; right: -120px;
-      width: 360px; height: 360px; border-radius: 50%;
-      border: 1.5px solid rgba(85,255,190,0.12); pointer-events: none;
-    }
-    .left-logo { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
-    .left-logo img { height: 28px; width: auto; }
-    .left-logo-icon {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: var(--az-light-green); display: flex; align-items: center;
-      justify-content: center; color: var(--az-dark); font-size: 16px; display: none;
-    }
-    .left-logo-name { font-size: 18px; font-weight: 700; color: #FFFFFF; letter-spacing: -0.3px; }
-    .left-body { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1; }
-    .left-headline { font-size: 26px; font-weight: 700; color: #FFFFFF; line-height: 1.25; margin-bottom: 10px; }
-    .left-headline span { color: var(--az-light-green); }
-    .left-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; margin-bottom: 36px; max-width: 300px; }
-    .feature-list { display: flex; flex-direction: column; gap: 14px; }
-    .feature-item { display: flex; align-items: flex-start; gap: 12px; }
-    .feature-icon {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: rgba(85,255,190,0.1); border: 1px solid rgba(85,255,190,0.2);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--az-light-green); font-size: 15px; flex-shrink: 0; margin-top: 1px;
-    }
-    .feature-text-title { font-size: 13px; font-weight: 600; color: #FFFFFF; line-height: 1.3; }
-    .feature-text-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
-    .left-footer { font-size: 10px; color: rgba(255,255,255,0.3); position: relative; z-index: 1; }
-
-    /* RIGHT PANEL */
-    .right { flex: 1; background: #F4F5F7; display: flex; align-items: center; justify-content: center; padding: 40px 32px; overflow-y: auto; }
-    .form-card {
-      width: 100%; max-width: 380px;
-      background: #FFFFFF; border: 1px solid rgba(22,48,61,0.1);
-      border-radius: 16px; padding: 36px 32px 28px;
-    }
-    .form-heading { font-size: 20px; font-weight: 700; color: var(--az-dark); margin-bottom: 4px; }
-    .form-sub { font-size: 12px; color: #8A979E; margin-bottom: 24px; }
-
-    .method-tabs { display: flex; background: #F4F5F7; border-radius: 10px; padding: 4px; margin-bottom: 24px; gap: 4px; }
-    .method-tab {
-      flex: 1; height: 34px; border: none; border-radius: 8px;
-      font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer;
-      transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 6px;
-      background: transparent; color: #8A979E;
-    }
-    .method-tab.active { background: #FFFFFF; color: var(--az-dark); box-shadow: 0 1px 4px rgba(22,48,61,0.1); }
-    .method-tab i { font-size: 14px; }
-
-    .form-panel { display: none; flex-direction: column; gap: 14px; }
-    .form-panel.active { display: flex; }
-
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 11px; font-weight: 600; color: #3D5A66; text-transform: uppercase; letter-spacing: 0.05em; }
-
-    .input-wrap { position: relative; display: flex; align-items: center; }
-    .input-wrap > i { position: absolute; left: 11px; font-size: 16px; color: #8A979E; pointer-events: none; z-index: 1; }
-    .input-wrap input {
-      width: 100%; height: 42px; padding: 0 40px 0 36px;
-      border: 1px solid rgba(22,48,61,0.15); border-radius: 8px;
-      font-family: var(--font); font-size: 13px; color: var(--az-dark);
-      background: #FAFAFA; transition: border-color 0.15s, box-shadow 0.15s; outline: none;
-    }
-    .input-wrap input:focus { border-color: var(--az-green); box-shadow: 0 0 0 3px rgba(46,216,142,0.12); background: #FFFFFF; }
-    .input-wrap input::placeholder { color: #C0C8CC; }
-    .toggle-pwd { position: absolute; right: 11px; background: none; border: none; cursor: pointer; color: #8A979E; font-size: 16px; padding: 0; line-height: 1; }
-    .toggle-pwd:hover { color: var(--az-dark); }
-
-    .phone-wrap { display: flex; gap: 8px; align-items: stretch; }
-    .phone-prefix {
-      height: 42px; width: 68px; flex-shrink: 0;
-      border: 1px solid rgba(22,48,61,0.15); border-radius: 8px;
-      background: #F4F5F7; font-family: var(--font); font-size: 12px; font-weight: 600;
-      color: var(--az-dark); display: flex; align-items: center; justify-content: center;
-      gap: 3px; cursor: pointer; white-space: nowrap;
-    }
-    .phone-prefix i { font-size: 11px; color: #8A979E; }
-    .phone-wrap .input-wrap { flex: 1; min-width: 0; }
-    .phone-wrap .input-wrap input { width: 100%; }
-
-    .pin-label { font-size: 11px; font-weight: 600; color: #3D5A66; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
-    .pin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .pin-grid input {
-      width: 100%; height: 52px; text-align: center;
-      font-size: 28px; font-weight: 900; letter-spacing: 0.05em; color: var(--az-dark);
-      border: 1px solid rgba(22,48,61,0.15); border-radius: 8px;
-      background: #FAFAFA; font-family: var(--font); outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s; padding: 0;
-    }
-    .pin-grid input:focus { border-color: var(--az-green); box-shadow: 0 0 0 3px rgba(46,216,142,0.12); background: #FFFFFF; }
-    .pin-grid input.filled { color: transparent; text-shadow: 0 0 0 var(--az-dark); }
-
-    .forgot-row { display: flex; justify-content: flex-end; }
-    .forgot-link { font-size: 11px; font-weight: 600; color: #1A7A5E; text-decoration: none; }
-    .forgot-link:hover { text-decoration: underline; }
-
-    .remember-row { display: flex; align-items: center; gap: 8px; }
-    .remember-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--az-green); cursor: pointer; }
-    .remember-row label { font-size: 12px; color: #3D5A66; cursor: pointer; user-select: none; }
-
-    .sign-in-btn {
-      width: 100%; height: 44px; background: var(--az-dark); color: #FFFFFF;
-      border: none; border-radius: 8px; font-family: var(--font);
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px;
-    }
-    .sign-in-btn:hover { background: #1e4a5c; }
-    .sign-in-btn:active { transform: scale(0.99); }
-    .sign-in-btn.loading { opacity: 0.75; pointer-events: none; }
-
-    .divider { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #C0C8CC; }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(22,48,61,0.1); }
-
-    .sso-btn {
-      width: 100%; height: 40px; background: transparent;
-      border: 1px solid rgba(22,48,61,0.15); border-radius: 8px;
-      font-family: var(--font); font-size: 12px; font-weight: 600; color: #3D5A66;
-      cursor: pointer; transition: all 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .sso-btn:hover { border-color: var(--az-dark); color: var(--az-dark); background: #F4F5F7; }
-    .sso-icon { width: 18px; height: 18px; border-radius: 4px; background: var(--az-dark); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--az-light-green); }
-
-    .error-msg { display: none; background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #B91C1C; align-items: center; gap: 8px; }
-    .error-msg.show { display: flex; }
-
-    .form-footer { font-size: 11px; color: #8A979E; text-align: center; margin-top: 6px; line-height: 1.5; }
-    .secure-badge { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 16px; font-size: 10px; color: #8A979E; }
-    .secure-badge i { font-size: 13px; color: var(--az-green); }
-  </style>
+  <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
@@ -179,22 +27,35 @@
       <div class="feature-list">
         <div class="feature-item">
           <div class="feature-icon"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
-          <div><div class="feature-text-title">Natural language prompts</div><div class="feature-text-sub">Just describe what you need — no menus required</div></div>
+          <div>
+            <div class="feature-text-title">Natural language prompts</div>
+            <div class="feature-text-sub">Just describe what you need — no menus required</div>
+          </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon"><i class="ti ti-layout-grid" aria-hidden="true"></i></div>
-          <div><div class="feature-text-title">12 pre-built templates</div><div class="feature-text-sub">Statements, transactions, balance and spending</div></div>
+          <div>
+            <div class="feature-text-title">12 pre-built templates</div>
+            <div class="feature-text-sub">Statements, transactions, balance and spending</div>
+          </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
-          <div><div class="feature-text-title">Audit-verified &amp; secure</div><div class="feature-text-sub">Data sourced live from Core Banking · CBS</div></div>
+          <div>
+            <div class="feature-text-title">Audit-verified &amp; secure</div>
+            <div class="feature-text-sub">Data sourced live from Core Banking · CBS</div>
+          </div>
         </div>
         <div class="feature-item">
           <div class="feature-icon"><i class="ti ti-file-export" aria-hidden="true"></i></div>
-          <div><div class="feature-text-title">PDF &amp; Excel export</div><div class="feature-text-sub">Download, share, or schedule at any time</div></div>
+          <div>
+            <div class="feature-text-title">PDF &amp; Excel export</div>
+            <div class="feature-text-sub">Download, share, or schedule at any time</div>
+          </div>
         </div>
       </div>
     </div>
+
     <div class="left-footer">&copy; 2026 Azentio Software · All rights reserved</div>
   </div>
 
@@ -205,10 +66,14 @@
       <div class="form-sub">Sign in to your ReportIQ account</div>
 
       <div class="method-tabs" role="tablist" aria-label="Login method">
-        <button class="method-tab active" id="tab-creds" role="tab" aria-selected="true" aria-controls="panel-creds" onclick="switchTab('creds')">
+        <button class="method-tab active" id="tab-creds" role="tab"
+                aria-selected="true" aria-controls="panel-creds"
+                onclick="switchTab('creds')">
           <i class="ti ti-user" aria-hidden="true"></i> Username
         </button>
-        <button class="method-tab" id="tab-pin" role="tab" aria-selected="false" aria-controls="panel-pin" onclick="switchTab('pin')">
+        <button class="method-tab" id="tab-pin" role="tab"
+                aria-selected="false" aria-controls="panel-pin"
+                onclick="switchTab('pin')">
           <i class="ti ti-device-mobile" aria-hidden="true"></i> Mobile &amp; PIN
         </button>
       </div>
@@ -237,7 +102,7 @@
             </button>
           </div>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center">
+        <div class="remember-forgot-row">
           <div class="remember-row">
             <input type="checkbox" id="remember">
             <label for="remember">Remember me</label>
@@ -261,17 +126,27 @@
             <div class="phone-prefix">+91 <i class="ti ti-chevron-down" aria-hidden="true"></i></div>
             <div class="input-wrap">
               <i class="ti ti-device-mobile" aria-hidden="true"></i>
-              <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" autocomplete="tel" oninput="this.value=this.value.replace(/\D/g,'')">
+              <input type="tel" id="mobile" placeholder="10-digit mobile number"
+                     maxlength="10" autocomplete="tel"
+                     oninput="this.value=this.value.replace(/\D/g,'')">
             </div>
           </div>
         </div>
         <div class="field">
           <div class="pin-label">4-digit PIN</div>
           <div class="pin-grid" role="group" aria-label="PIN entry">
-            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="PIN digit 1" autocomplete="off" oninput="pinInput(this,0)" onkeydown="pinKey(event,0)">
-            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="PIN digit 2" autocomplete="off" oninput="pinInput(this,1)" onkeydown="pinKey(event,1)">
-            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="PIN digit 3" autocomplete="off" oninput="pinInput(this,2)" onkeydown="pinKey(event,2)">
-            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="PIN digit 4" autocomplete="off" oninput="pinInput(this,3)" onkeydown="pinKey(event,3)">
+            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                   aria-label="PIN digit 1" autocomplete="off"
+                   oninput="pinInput(this,0)" onkeydown="pinKey(event,0)">
+            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                   aria-label="PIN digit 2" autocomplete="off"
+                   oninput="pinInput(this,1)" onkeydown="pinKey(event,1)">
+            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                   aria-label="PIN digit 3" autocomplete="off"
+                   oninput="pinInput(this,2)" onkeydown="pinKey(event,2)">
+            <input type="text" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                   aria-label="PIN digit 4" autocomplete="off"
+                   oninput="pinInput(this,3)" onkeydown="pinKey(event,3)">
           </div>
         </div>
         <div class="forgot-row">
@@ -292,8 +167,7 @@
       </div>
       <div class="form-footer">
         By signing in you agree to Azentio&#39;s
-        <a href="#" style="color:#1A7A5E;text-decoration:none">Terms of Use</a> and
-        <a href="#" style="color:#1A7A5E;text-decoration:none">Privacy Policy</a>
+        <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>
       </div>
     </div>
   </div>
@@ -302,19 +176,29 @@
     'use strict';
 
     function switchTab(tab) {
-      document.querySelectorAll('.method-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.method-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
       document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-'+tab).classList.add('active');
-      document.getElementById('tab-'+tab).setAttribute('aria-selected','true');
-      document.getElementById('panel-'+tab).classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('tab-' + tab).setAttribute('aria-selected', 'true');
+      document.getElementById('panel-' + tab).classList.add('active');
       hideError();
     }
 
     function togglePwd(fieldId, btn) {
       const input = document.getElementById(fieldId);
       const icon  = btn.querySelector('i');
-      if (input.type === 'password') { input.type = 'text'; icon.className = 'ti ti-eye-off'; btn.setAttribute('aria-label','Hide password'); }
-      else { input.type = 'password'; icon.className = 'ti ti-eye'; btn.setAttribute('aria-label','Show password'); }
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'ti ti-eye-off';
+        btn.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        icon.className = 'ti ti-eye';
+        btn.setAttribute('aria-label', 'Show password');
+      }
     }
 
     function pinInput(el, idx) {
@@ -329,45 +213,51 @@
     function pinKey(e, idx) {
       if (e.key === 'Backspace') {
         const boxes = document.querySelectorAll('.pin-box');
-        if (!boxes[idx].value && idx > 0) { boxes[idx-1].value = ''; boxes[idx-1].classList.remove('filled'); boxes[idx-1].focus(); }
+        if (!boxes[idx].value && idx > 0) {
+          boxes[idx - 1].value = '';
+          boxes[idx - 1].classList.remove('filled');
+          boxes[idx - 1].focus();
+        }
       }
     }
 
-    function showError(msg) { document.getElementById('error-text').textContent = msg; document.getElementById('error-msg').classList.add('show'); }
-    function hideError() { document.getElementById('error-msg').classList.remove('show'); }
+    function showError(msg) {
+      document.getElementById('error-text').textContent = msg;
+      document.getElementById('error-msg').classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('error-msg').classList.remove('show');
+    }
 
     function handleLogin(method) {
       hideError();
-      const btn = document.getElementById('btn-'+method);
+      const btn = document.getElementById('btn-' + method);
       if (method === 'creds') {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value;
         if (!u || !p) { showError('Please enter your username and password.'); return; }
       } else {
-        const m = document.getElementById('mobile').value.trim();
+        const m    = document.getElementById('mobile').value.trim();
         const pins = [...document.querySelectorAll('.pin-box')].map(b => b.value);
         if (m.length < 10) { showError('Please enter a valid 10-digit mobile number.'); return; }
         if (pins.some(v => !v)) { showError('Please enter all 4 digits of your PIN.'); return; }
       }
       btn.classList.add('loading');
-      btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 0.8s linear infinite"></i> Signing in…';
+      btn.innerHTML = '<i class="ti ti-loader-2 spinner"></i> Signing in…';
       setTimeout(() => { window.location.href = 'reporting-workspace.html'; }, 1200);
     }
 
-    function handleSSO() { window.location.href = 'reporting-workspace.html'; }
-    function showForgot() { alert('Password reset link will be sent to your registered email address.'); }
-    function showForgotPin() { alert('A reset link will be sent to your registered mobile number.'); }
+    function handleSSO()      { window.location.href = 'reporting-workspace.html'; }
+    function showForgot()     { alert('Password reset link will be sent to your registered email address.'); }
+    function showForgotPin()  { alert('A reset link will be sent to your registered mobile number.'); }
 
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         const id = document.querySelector('.form-panel.active').id === 'panel-creds' ? 'creds' : 'pin';
         handleLogin(id);
       }
     });
-
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
-    document.head.appendChild(style);
   </script>
 </body>
 </html>
