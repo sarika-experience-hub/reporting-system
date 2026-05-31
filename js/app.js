@@ -1133,3 +1133,41 @@ function resetWorkspace() {
   hide('report-output'); show('canvas-empty'); hide('report-badge');
   $('actions-panel').innerHTML = ''; hide('actions-panel'); show('right-empty');
 }
+
+// ── Avatar dropdown ────────────────────────────────────────────────
+function toggleAvatarMenu() {
+  const menu = document.getElementById('avatar-menu');
+  const btn  = document.getElementById('avatar-btn');
+  const isOpen = !menu.classList.contains('hidden');
+  if (isOpen) {
+    menu.classList.add('hidden');
+    btn.setAttribute('aria-expanded', 'false');
+  } else {
+    menu.classList.remove('hidden');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// Close avatar menu when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('avatar-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    const menu = document.getElementById('avatar-menu');
+    const btn  = document.getElementById('avatar-btn');
+    if (menu) menu.classList.add('hidden');
+    if (btn)  btn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+function openHelp() {
+  showToast('ℹ Help & Support coming soon.');
+}
+
+function openWhatsNew() {
+  showToast('✨ You\'re on ReportIQ v1.0 — the latest version!');
+}
+
+function handleLogout() {
+  showToast('👋 Logging out…');
+  setTimeout(() => { window.location.href = 'index.html'; }, 900);
+}
