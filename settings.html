@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings – ReportIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="settings-body">
+
+  <!-- ── Top bar ─────────────────────────────────────────────────── -->
+  <header class="settings-topbar" role="banner">
+
+    <a class="topbar-logo" href="index.html" title="Azentio home">
+      <img src="images/azentio_logo.svg" alt="Azentio"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="topbar-logo-fallback" style="display:none" aria-hidden="true">
+        <div class="arch">A</div>
+        <span>azentio</span>
+      </div>
+    </a>
+
+    <div class="topbar-divider" aria-hidden="true"></div>
+
+    <div class="topbar-appname">
+      <div class="topbar-appname-icon" aria-hidden="true">
+        <i class="ti ti-report-analytics"></i>
+      </div>
+      <span class="topbar-appname-label">ReportIQ</span>
+    </div>
+
+    <div class="topbar-divider" aria-hidden="true"></div>
+
+    <span class="topbar-title">Settings</span>
+
+    <div class="topbar-right">
+      <a class="topbar-btn" href="reporting-workspace.html" aria-label="Back to workspace" style="text-decoration:none">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i> Back to Workspace
+      </a>
+      <div class="settings-topbar-avatar" role="img" aria-label="Signed in as Sarika Desai">SD</div>
+    </div>
+
+  </header>
+
+  <!-- ── Layout ─────────────────────────────────────────────────── -->
+  <div class="settings-layout">
+
+    <!-- Sidebar nav -->
+    <nav class="settings-nav" aria-label="Settings navigation">
+      <a class="settings-nav-item active" href="#report-prefs" onclick="scrollToSection('report-prefs')">
+        <i class="ti ti-adjustments-horizontal"></i> Report Preferences
+      </a>
+      <a class="settings-nav-item" href="#appearance" onclick="scrollToSection('appearance')">
+        <i class="ti ti-palette"></i> Appearance
+      </a>
+      <a class="settings-nav-item" href="#privacy" onclick="scrollToSection('privacy')">
+        <i class="ti ti-shield-lock"></i> Data &amp; Privacy
+      </a>
+      <a class="settings-nav-item" href="#security" onclick="scrollToSection('security')">
+        <i class="ti ti-lock"></i> Security
+      </a>
+      <a class="settings-nav-item" href="#about" onclick="scrollToSection('about')">
+        <i class="ti ti-info-circle"></i> About
+      </a>
+      <div class="settings-nav-divider"></div>
+      <a class="settings-nav-item settings-nav-logout" href="#" onclick="handleSettingsLogout(); return false;">
+        <i class="ti ti-logout"></i> Log out
+      </a>
+    </nav>
+
+    <!-- Content -->
+    <main class="settings-content" role="main">
+
+      <!-- ── Report Preferences ── -->
+      <section class="settings-section" id="report-prefs" aria-labelledby="prefs-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-adjustments-horizontal"></i></div>
+          <div>
+            <div class="settings-section-title" id="prefs-title">Report Preferences</div>
+            <div class="settings-section-desc">Defaults applied when generating new reports</div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Default export format</div>
+            <div class="settings-row-sub">Format pre-selected in the download dropdown</div>
+          </div>
+          <select class="settings-select" id="pref-format" onchange="savePref('format', this.value)">
+            <option value="PDF">PDF – best for sharing</option>
+            <option value="Excel">Excel – best for analysis</option>
+          </select>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Default date range</div>
+            <div class="settings-row-sub">Period shown first when starting a report</div>
+          </div>
+          <select class="settings-select" id="pref-period" onchange="savePref('period', this.value)">
+            <option value="last-month">Last month</option>
+            <option value="last-3-months">Last 3 months</option>
+            <option value="last-6-months">Last 6 months</option>
+            <option value="this-year">This year</option>
+            <option value="custom">Custom range</option>
+          </select>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Default account type</div>
+            <div class="settings-row-sub">Account pre-selected in the guided flow</div>
+          </div>
+          <select class="settings-select" id="pref-account" onchange="savePref('account', this.value)">
+            <option value="savings">Savings account</option>
+            <option value="current">Current account</option>
+            <option value="credit-card">Credit card</option>
+            <option value="all">All accounts</option>
+          </select>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Email delivery on report generation</div>
+            <div class="settings-row-sub">Send report to sarika.bagwe@azentio.com after each generation</div>
+          </div>
+          <label class="settings-toggle" aria-label="Email delivery toggle">
+            <input type="checkbox" id="pref-email-delivery" onchange="savePref('emailDelivery', this.checked)">
+            <span class="settings-toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Scheduled report notifications</div>
+            <div class="settings-row-sub">Notify when auto-scheduled reports are ready</div>
+          </div>
+          <label class="settings-toggle" aria-label="Scheduled report notifications toggle">
+            <input type="checkbox" id="pref-sched-notif" checked onchange="savePref('schedNotif', this.checked)">
+            <span class="settings-toggle-slider"></span>
+          </label>
+        </div>
+
+      </section>
+
+      <!-- ── Appearance ── -->
+      <section class="settings-section" id="appearance" aria-labelledby="appear-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-palette"></i></div>
+          <div>
+            <div class="settings-section-title" id="appear-title">Appearance</div>
+            <div class="settings-section-desc">Customise how ReportIQ looks</div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Theme</div>
+            <div class="settings-row-sub">Switch between light and dark interface</div>
+          </div>
+          <select class="settings-select" id="pref-theme" onchange="applyTheme(this.value)">
+            <option value="light">Light</option>
+            <option value="dark">Dark (coming soon)</option>
+            <option value="system">Follow system</option>
+          </select>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Density</div>
+            <div class="settings-row-sub">Control spacing in tables and lists</div>
+          </div>
+          <select class="settings-select" id="pref-density" onchange="savePref('density', this.value)">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+          </select>
+        </div>
+
+      </section>
+
+      <!-- ── Data & Privacy ── -->
+      <section class="settings-section" id="privacy" aria-labelledby="privacy-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-shield-lock"></i></div>
+          <div>
+            <div class="settings-section-title" id="privacy-title">Data &amp; Privacy</div>
+            <div class="settings-section-desc">Manage your data and saved content</div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Data source</div>
+            <div class="settings-row-sub">All reports are sourced from Core Banking · CBS</div>
+          </div>
+          <span class="settings-badge"><i class="ti ti-check" style="font-size:10px;margin-right:3px"></i>Verified</span>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Saved favourites</div>
+            <div class="settings-row-sub">Stored locally in your browser — not synced to the server</div>
+          </div>
+          <button class="settings-btn-danger" onclick="clearFavourites()">
+            <i class="ti ti-trash" style="font-size:12px"></i> Clear all
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Export my preferences</div>
+            <div class="settings-row-sub">Download your settings as a JSON file</div>
+          </div>
+          <button class="settings-btn" onclick="exportPrefs()">
+            <i class="ti ti-download"></i> Export
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Report data retention</div>
+            <div class="settings-row-sub">Generated reports are not stored — data fetched live each time</div>
+          </div>
+          <span style="font-size:12px;color:var(--color-text-muted)">No retention</span>
+        </div>
+
+      </section>
+
+      <!-- ── Security ── -->
+      <section class="settings-section" id="security" aria-labelledby="security-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-lock"></i></div>
+          <div>
+            <div class="settings-section-title" id="security-title">Security</div>
+            <div class="settings-section-desc">Sessions and access management</div>
+          </div>
+        </div>
+
+        <div class="settings-session-row">
+          <div class="settings-session-icon"><i class="ti ti-device-laptop"></i></div>
+          <div>
+            <div class="settings-session-label">Windows · Chrome 124</div>
+            <div class="settings-session-sub">Mumbai, India · Last active just now</div>
+          </div>
+          <span class="settings-session-current">Current session</span>
+        </div>
+
+        <div class="settings-session-row">
+          <div class="settings-session-icon"><i class="ti ti-device-mobile"></i></div>
+          <div>
+            <div class="settings-session-label">Android · Chrome Mobile</div>
+            <div class="settings-session-sub">Mumbai, India · Last active 2 days ago</div>
+          </div>
+          <button class="settings-btn-danger" onclick="revokeSession(this)" style="font-size:11px;height:26px;padding:0 10px;">Revoke</button>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Change password</div>
+            <div class="settings-row-sub">Managed via Azentio corporate portal</div>
+          </div>
+          <a class="settings-btn" href="#" style="text-decoration:none" onclick="showToast('Redirecting to corporate portal…'); return false;">
+            <i class="ti ti-external-link"></i> Go to portal
+          </a>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Last login</div>
+            <div class="settings-row-sub">Your most recent successful sign-in</div>
+          </div>
+          <span style="font-size:12px;color:var(--color-text-muted)" id="last-login-time">Today, loading…</span>
+        </div>
+
+      </section>
+
+      <!-- ── About ── -->
+      <section class="settings-section" id="about" aria-labelledby="about-title">
+        <div class="settings-section-header">
+          <div class="settings-section-icon"><i class="ti ti-info-circle"></i></div>
+          <div>
+            <div class="settings-section-title" id="about-title">About</div>
+            <div class="settings-section-desc">Application information and legal notices</div>
+          </div>
+        </div>
+
+        <div class="settings-info-grid">
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Application</div>
+            <div class="settings-info-value">ReportIQ</div>
+          </div>
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Version</div>
+            <div class="settings-info-value">v1.0.0</div>
+          </div>
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Build date</div>
+            <div class="settings-info-value">May 2026</div>
+          </div>
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Data source</div>
+            <div class="settings-info-value">Core Banking · CBS</div>
+          </div>
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Organisation</div>
+            <div class="settings-info-value">Azentio Digital Banking</div>
+          </div>
+          <div class="settings-info-cell">
+            <div class="settings-info-label">Status</div>
+            <div class="settings-info-value" style="color:var(--color-accent)">● All systems operational</div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Legal notices</div>
+            <div class="settings-row-sub">Terms of use, privacy policy, and open-source licences</div>
+          </div>
+          <button class="settings-btn" onclick="showToast('Opening legal notices…')">
+            <i class="ti ti-file-text"></i> View
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    'use strict';
+
+    const PREFS_KEY = 'reportiq_settings';
+
+    function loadPrefs() {
+      try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }
+      catch { return {}; }
+    }
+
+    function savePref(key, value) {
+      const prefs = loadPrefs();
+      prefs[key] = value;
+      localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+      showToast('Preference saved.');
+    }
+
+    function applyTheme(value) {
+      savePref('theme', value);
+      if (value === 'dark') showToast('Dark mode coming soon!');
+    }
+
+    function clearFavourites() {
+      if (confirm('Clear all saved favourites? This cannot be undone.')) {
+        localStorage.removeItem('reportiq_favourites');
+        showToast('✓ All favourites cleared.');
+      }
+    }
+
+    function exportPrefs() {
+      const data = { preferences: loadPrefs(), exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'reportiq-preferences.json';
+      a.click();
+    }
+
+    function revokeSession(btn) {
+      const row = btn.closest('.settings-session-row');
+      row.style.opacity = '0.4';
+      btn.disabled = true;
+      btn.textContent = 'Revoked';
+      showToast('Session revoked.');
+    }
+
+    function handleSettingsLogout() {
+      showToast('👋 Logging out…');
+      setTimeout(() => { window.location.href = 'index.html'; }, 900);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(t._to);
+      t._to = setTimeout(() => t.style.opacity = '0', 2800);
+    }
+
+    // Restore saved preferences on load
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // update active nav
+      document.querySelectorAll('.settings-nav-item:not(.settings-nav-logout)').forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+      });
+    }
+
+    function restorePrefs() {
+      const prefs = loadPrefs();
+      const sel = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      const chk = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.checked = val; };
+      sel('pref-format',    prefs.format);
+      sel('pref-period',    prefs.period);
+      sel('pref-account',   prefs.account);
+      sel('pref-theme',     prefs.theme);
+      sel('pref-density',   prefs.density);
+      chk('pref-email-delivery', prefs.emailDelivery);
+      chk('pref-sched-notif',    prefs.schedNotif !== undefined ? prefs.schedNotif : true);
+    }
+
+    // Highlight active nav item on scroll
+    function updateActiveNav() {
+      const sections = document.querySelectorAll('.settings-section');
+      const navItems = document.querySelectorAll('.settings-nav-item:not(.settings-nav-logout)');
+      let current = '';
+      sections.forEach(sec => {
+        if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+      });
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+      });
+    }
+
+    // Set last login time
+    document.getElementById('last-login-time').textContent =
+      new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' +
+      new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+    document.addEventListener('DOMContentLoaded', restorePrefs);
+    window.addEventListener('scroll', updateActiveNav);
+  </script>
+</body>
+</html>
