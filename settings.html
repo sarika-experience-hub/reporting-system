@@ -70,6 +70,7 @@
   </header>
 
   <!-- ── Layout ─────────────────────────────────────────────────── -->
+  <div class="settings-scroll-wrap" id="settings-scroll-wrap">
   <div class="settings-layout">
 
     <!-- Sidebar nav -->
@@ -428,6 +429,7 @@
 
     </main>
   </div>
+  </div><!-- /.settings-scroll-wrap -->
 
   <!-- Toast -->
   <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -517,8 +519,9 @@
     // Restore saved preferences on load
     function scrollToSection(id) {
       const el = document.getElementById(id);
-      if (!el) return;
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const wrap = document.getElementById('settings-scroll-wrap');
+      if (!el || !wrap) return;
+      wrap.scrollTo({ top: el.offsetTop - 24, behavior: 'smooth' });
       // update active nav
       document.querySelectorAll('.settings-nav-item:not(.settings-nav-logout)').forEach(item => {
         item.classList.toggle('active', item.getAttribute('href') === '#' + id);
@@ -540,11 +543,13 @@
 
     // Highlight active nav item on scroll
     function updateActiveNav() {
+      const wrap = document.getElementById('settings-scroll-wrap');
+      if (!wrap) return;
       const sections = document.querySelectorAll('.settings-section');
       const navItems = document.querySelectorAll('.settings-nav-item:not(.settings-nav-logout)');
       let current = '';
       sections.forEach(sec => {
-        if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+        if (sec.offsetTop - wrap.scrollTop <= 80) current = sec.id;
       });
       navItems.forEach(item => {
         item.classList.toggle('active', item.getAttribute('href') === '#' + current);
@@ -556,8 +561,11 @@
       new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' +
       new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-    document.addEventListener('DOMContentLoaded', () => { restorePrefs(); updateActiveNav(); });
-    window.addEventListener('scroll', updateActiveNav);
+    document.addEventListener('DOMContentLoaded', () => {
+      restorePrefs();
+      updateActiveNav();
+      document.getElementById('settings-scroll-wrap').addEventListener('scroll', updateActiveNav);
+    });
   </script>
 </body>
 </html>
