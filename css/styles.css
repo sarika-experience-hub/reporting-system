@@ -68,6 +68,8 @@ body {
 .actions-scroll:hover::-webkit-scrollbar-thumb,
 .fav-grid:hover::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
 
+.settings-scroll-wrap:hover::-webkit-scrollbar-thumb { background: rgba(22,48,61,0.35); }
+
 .hidden { display: none !important; }
 
 /* ================================================================
@@ -1182,12 +1184,22 @@ body.settings-body {
   font-family: var(--font);
   background: var(--color-bg);
   color: var(--color-text-primary);
-  height: auto;
-  min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.settings-scroll-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.settings-scroll-wrap:hover {
+  scrollbar-color: rgba(22,48,61,0.35) transparent;
 }
 
 .settings-topbar {
