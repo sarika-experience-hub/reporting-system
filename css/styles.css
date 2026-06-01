@@ -64,7 +64,9 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: transparent; border-radius: 99px; transition: background 0.2s; }
 .canvas-scroll:hover::-webkit-scrollbar-thumb,
-.chat-messages:hover::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
+.chat-messages:hover::-webkit-scrollbar-thumb,
+.actions-scroll:hover::-webkit-scrollbar-thumb,
+.fav-grid:hover::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
 
 .hidden { display: none !important; }
 
@@ -80,6 +82,7 @@ body {
   padding: 0 20px;
   gap: 14px;
   flex-shrink: 0;
+  user-select: none;
 }
 
 .topbar-logo {
@@ -551,8 +554,13 @@ body {
    RIGHT PANEL — ACTIONS
    ================================================================ */
 .actions-scroll {
-  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px; scrollbar-width: none;
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
   display: flex; flex-direction: column; gap: 14px;
+}
+.actions-scroll:hover {
+  scrollbar-color: var(--color-border-strong) transparent;
 }
 .action-section-label {
   font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
@@ -807,6 +815,11 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px;
   align-content: start;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.fav-grid:hover {
+  scrollbar-color: var(--color-border-strong) transparent;
 }
 
 .fav-card {
@@ -1189,6 +1202,7 @@ body.settings-body {
   position: sticky;
   top: 0;
   z-index: 200;
+  user-select: none;
 }
 
 .settings-topbar-back {
