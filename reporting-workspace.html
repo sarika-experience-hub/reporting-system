@@ -39,8 +39,8 @@
     <span class="topbar-title">Digital Banking · Reporting Workspace</span>
 
     <div class="topbar-right">
-      <button class="topbar-btn" onclick="resetWorkspace()" aria-label="Start a new report">
-        <i class="ti ti-refresh" aria-hidden="true"></i> New Report
+      <button class="topbar-btn" onclick="resetWorkspace()" aria-label="Go to home screen">
+        <i class="ti ti-home" aria-hidden="true"></i> Home
       </button>
       <!-- Favourites button with live count badge -->
       <button class="topbar-btn" onclick="openTemplates()" aria-label="Browse report templates">
@@ -64,6 +64,7 @@
           <a class="avatar-menu-item" href="settings.html" role="menuitem"><i class="ti ti-settings"></i> Settings</a>
           <a class="avatar-menu-item" href="#" role="menuitem" onclick="openHelp();return false;"><i class="ti ti-help-circle"></i> Help &amp; Support</a>
           <a class="avatar-menu-item" href="#" role="menuitem" onclick="openWhatsNew();return false;"><i class="ti ti-sparkles"></i> What's New</a>
+          <a class="avatar-menu-item" href="#" role="menuitem" onclick="openFeedback();return false;"><i class="ti ti-message-plus"></i> Give Feedback</a>
           <div class="avatar-menu-divider"></div>
           <a class="avatar-menu-item avatar-menu-logout" href="#" role="menuitem" onclick="handleLogout();return false;"><i class="ti ti-logout"></i> Log out</a>
         </div>
@@ -86,39 +87,42 @@
         <span class="panel-header-badge hidden" id="chat-badge" aria-live="polite">Guided</span>
       </div>
 
-      <div class="chat-empty" id="chat-empty">
-        <div class="chat-empty-icon" aria-hidden="true"><i class="ti ti-sparkles"></i></div>
-        <h3>What report would you like to generate today?</h3>
-        <p>Type your request in natural language — or start from a template.</p>
-        <div class="chips" style="margin-top:2px" role="list" aria-label="Quick-start options">
-          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Account statement')" onkeydown="if(event.key==='Enter')quickStart('Account statement')"><i class="ti ti-file-text" aria-hidden="true"></i> Account statement</span>
-          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Transaction summary')" onkeydown="if(event.key==='Enter')quickStart('Transaction summary')"><i class="ti ti-list" aria-hidden="true"></i> Transaction summary</span>
-          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Balance report')" onkeydown="if(event.key==='Enter')quickStart('Balance report')"><i class="ti ti-wallet" aria-hidden="true"></i> Balance report</span>
-          <span class="chip" role="listitem button" tabindex="0" onclick="quickStart('Spending analysis')" onkeydown="if(event.key==='Enter')quickStart('Spending analysis')"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending analysis</span>
-        </div>
-        <div style="margin-top:14px;width:100%;border-top:1px solid var(--color-border);padding-top:12px">
-          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-muted);margin-bottom:5px">Popular templates</div>
-          <div style="display:flex;flex-direction:column;gap:4px;width:100%">
-            <button class="tmpl-quick-btn" onclick="applyTemplate('tmpl-monthly-stmt')"><i class="ti ti-file-text" aria-hidden="true"></i> Monthly Account Statement <span class="tmpl-quick-tag">PDF</span></button>
-            <button class="tmpl-quick-btn" onclick="applyTemplate('tmpl-monthly-tx')"><i class="ti ti-list" aria-hidden="true"></i> Monthly Transaction Summary <span class="tmpl-quick-tag">Excel</span></button>
-          </div>
-        </div>
-      </div>
+      <div class="chat-messages" id="chat-messages" aria-live="polite" aria-label="Conversation"></div>
 
-      <div class="chat-messages hidden" id="chat-messages" aria-live="polite" aria-label="Conversation"></div>
-
-      <!-- Browse all templates — anchored above input, visible in empty state only -->
-      <div class="browse-tmpl-bar" id="browse-tmpl-bar">
+      <!-- Browse all templates — anchored above input -->
+      <div class="browse-tmpl-bar hidden" id="browse-tmpl-bar">
         <button onclick="openTemplates()">
           <i class="ti ti-layout-grid" aria-hidden="true"></i> Browse all templates
           <i class="ti ti-arrow-right" aria-hidden="true" style="font-size:12px;margin-left:2px"></i>
         </button>
       </div>
 
+      <!-- Journey context bar — shown when a journey is active -->
+      <div class="journey-bar hidden" id="journey-bar">
+        <span class="journey-bar-info">
+          <i class="ti ti-circle-dot journey-bar-dot" aria-hidden="true"></i>
+          <span id="journey-bar-name">Generate a report</span>
+        </span>
+        <button class="journey-bar-switch" onclick="resetWorkspace()" title="Go back to home and choose a different journey">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Switch journey
+        </button>
+      </div>
+
       <div class="chat-input-area">
+        <!-- Escape hatch — shown in welcome + active journey -->
+        <div class="escape-hatch hidden" id="escape-hatch">
+          <button class="escape-hatch-btn" onclick="showPopularReports()" aria-label="See suggested report examples">
+            <i class="ti ti-help-circle" aria-hidden="true"></i> Not sure what to ask?
+          </button>
+        </div>
+        <!-- Typeahead suggestions -->
+        <div class="typeahead-dropdown hidden" id="typeahead-dropdown" role="listbox" aria-label="Suggestions"></div>
         <div class="chat-input-wrap">
           <label for="chat-input" class="sr-only">Type your report request</label>
-          <textarea id="chat-input" rows="1" placeholder="Type your report request…" onkeydown="handleKey(event)" oninput="autoResize(this)" aria-label="Report request input" autofocus></textarea>
+          <textarea id="chat-input" rows="1" placeholder="Type your report request…" onkeydown="handleKey(event)" oninput="handleInputChange(this)" aria-label="Report request input" autofocus></textarea>
+          <button class="voice-btn" id="voice-btn" onclick="toggleVoiceInput()" aria-label="Voice input — speak your request" title="Speak your request">
+            <i class="ti ti-microphone" id="voice-icon" aria-hidden="true"></i>
+          </button>
           <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
             <i class="ti ti-send" aria-hidden="true"></i>
           </button>
@@ -136,12 +140,17 @@
         <span class="panel-header-badge hidden" id="report-badge">Live</span>
       </div>
 
-      <div class="canvas-scroll" id="canvas-scroll">
+      <!-- Report meta bar — visible once a report is generated -->
+      <div class="report-action-bar hidden" id="report-action-bar">
+        <div class="rab-meta" id="rab-meta"></div>
+      </div>
+
+      <div class="canvas-scroll" id="canvas-scroll" aria-live="polite">
 
         <div class="canvas-empty" id="canvas-empty">
           <div class="canvas-empty-icon" aria-hidden="true"><i class="ti ti-file-analytics"></i></div>
           <h2>Your report will appear here</h2>
-          <p>Start a conversation on the left to generate account statements, transaction summaries, and more.</p>
+          <p><strong>Generate a report</strong>, <strong>use a template</strong>, or <strong>create a new one</strong> <br> using the chat on the left — your output will appear here.</p>
           <div class="example-chips" role="list" aria-label="Example report types">
             <span class="example-chip" role="listitem button" tabindex="0" onclick="quickStart('Show me last 3 months account statement')" onkeydown="if(event.key==='Enter')quickStart('Show me last 3 months account statement')">Last 3 months statement</span>
             <span class="example-chip" role="listitem button" tabindex="0" onclick="quickStart('Transaction summary for January 2026')" onkeydown="if(event.key==='Enter')quickStart('Transaction summary for January 2026')">Jan 2026 transactions</span>
@@ -154,20 +163,22 @@
       </div>
     </section>
 
-    <!-- ── RIGHT: Contextual Actions ────────────── -->
+    <!-- ── RIGHT: Actions ────────────────── -->
     <section class="panel" id="panel-right" aria-label="Report actions">
 
       <div class="panel-header">
-        <i class="ti ti-bolt" style="font-size:14px; color:var(--az-green)" aria-hidden="true"></i>
+        <i class="ti ti-settings-2" style="font-size:14px; color:var(--az-green)" aria-hidden="true"></i>
         <span class="panel-header-title">Actions</span>
       </div>
 
+      <!-- Empty state — shown before any report is generated -->
       <div class="right-empty" id="right-empty">
-        <i class="ti ti-click" aria-hidden="true" style="font-size:28px; color:var(--color-text-muted)"></i>
-        <p>Actions will appear once your report is generated.</p>
+        <div class="right-empty-icon" aria-hidden="true"><i class="ti ti-cursor-text"></i></div>
+        <p>Generate a report to see actions here.</p>
       </div>
 
-      <div class="actions-scroll hidden" id="actions-panel"></div>
+      <!-- Action buttons — populated by renderActions() -->
+      <div class="rab-btns hidden" id="actions-panel" role="group" aria-label="Report actions"></div>
 
     </section>
 
@@ -250,12 +261,14 @@
       </div>
 
       <!-- Filter bar -->
-      <div class="fav-filter-bar" role="group" aria-label="Filter by report type">
+      <div class="fav-filter-bar" role="group" aria-label="Filter by type">
         <button class="fav-filter-chip active" onclick="setFavFilter('all', this)">All</button>
-        <button class="fav-filter-chip" onclick="setFavFilter('account statement', this)"><i class="ti ti-file-text" aria-hidden="true"></i> Statements</button>
-        <button class="fav-filter-chip" onclick="setFavFilter('transaction summary', this)"><i class="ti ti-list" aria-hidden="true"></i> Transactions</button>
-        <button class="fav-filter-chip" onclick="setFavFilter('balance report', this)"><i class="ti ti-wallet" aria-hidden="true"></i> Balance</button>
-        <button class="fav-filter-chip" onclick="setFavFilter('spending analysis', this)"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending</button>
+        <button class="fav-filter-chip fav-chip-reports" onclick="setFavFilter('reports', this)"><i class="ti ti-file-analytics" aria-hidden="true"></i> Reports</button>
+        <button class="fav-filter-chip fav-chip-templates" onclick="setFavFilter('templates', this)"><i class="ti ti-template" aria-hidden="true"></i> Templates</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('statement', this)"><i class="ti ti-file-text" aria-hidden="true"></i> Statements</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('transaction', this)"><i class="ti ti-list" aria-hidden="true"></i> Transactions</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('balance', this)"><i class="ti ti-wallet" aria-hidden="true"></i> Balance</button>
+        <button class="fav-filter-chip" onclick="setFavFilter('spending', this)"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending</button>
       </div>
 
       <!-- Cards grid -->
@@ -271,6 +284,191 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ── Filter Transactions Drawer ──────────────────────────────── -->
+  <div class="filter-backdrop hidden" id="filter-backdrop" onclick="closeFilterDrawer()"></div>
+  <aside class="filter-drawer" id="filter-drawer" role="dialog" aria-modal="true" aria-label="Filter transactions">
+
+    <div class="filter-drawer-header">
+      <div class="filter-drawer-title">
+        <i class="ti ti-filter"></i> Filter Transactions
+      </div>
+      <button class="filter-drawer-close" onclick="closeFilterDrawer()" aria-label="Close filter">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <div class="filter-drawer-body">
+
+      <!-- Transaction type -->
+      <div class="filter-group">
+        <div class="filter-group-label">Transaction type</div>
+        <div class="filter-type-row">
+          <button class="filter-type-btn active" data-type="all"     onclick="selectType(this)">All</button>
+          <button class="filter-type-btn"         data-type="CR"      onclick="selectType(this)"><i class="ti ti-arrow-down-left"></i> Credits</button>
+          <button class="filter-type-btn"         data-type="DR"      onclick="selectType(this)"><i class="ti ti-arrow-up-right"></i> Debits</button>
+        </div>
+      </div>
+
+      <!-- Category -->
+      <div class="filter-group">
+        <div class="filter-group-label">Category</div>
+        <div class="filter-cat-grid" id="filter-cat-grid">
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Salary"       checked> <i class="ti ti-briefcase cat-salary"></i> Salary
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Transfer"     checked> <i class="ti ti-arrow-left-right cat-transfer"></i> Transfer
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Food & Dining" checked> <i class="ti ti-tools-kitchen-2 cat-food"></i> Food & Dining
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Shopping"     checked> <i class="ti ti-shopping-bag cat-shopping"></i> Shopping
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Utilities"    checked> <i class="ti ti-bolt cat-utilities"></i> Utilities
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Travel"       checked> <i class="ti ti-plane cat-travel"></i> Travel
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Health"       checked> <i class="ti ti-heart-rate cat-health"></i> Health
+          </label>
+          <label class="filter-cat-item">
+            <input type="checkbox" value="Others"       checked> <i class="ti ti-dots-circle-horizontal cat-others"></i> Others
+          </label>
+        </div>
+        <button class="filter-cat-toggle" id="filter-cat-toggle" onclick="toggleAllCats(this)">
+          <i class="ti ti-square-minus"></i> Deselect all
+        </button>
+      </div>
+
+      <!-- Amount range -->
+      <div class="filter-group">
+        <div class="filter-group-label">Amount range</div>
+        <div class="filter-amount-row">
+          <div class="filter-amount-field">
+            <span class="filter-amount-prefix">₹</span>
+            <input type="number" id="filter-min" placeholder="Min" min="0">
+          </div>
+          <span class="filter-amount-sep">—</span>
+          <div class="filter-amount-field">
+            <span class="filter-amount-prefix">₹</span>
+            <input type="number" id="filter-max" placeholder="Max" min="0">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="filter-drawer-footer">
+      <button class="filter-btn-clear" onclick="clearFilters()">
+        <i class="ti ti-refresh"></i> Reset
+      </button>
+      <button class="filter-btn-apply" onclick="applyFilters()">
+        <i class="ti ti-check"></i> Apply filters
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ── Feedback ──────────────────────────────────────────────── -->
+
+  <!-- Feedback modal -->
+  <div class="fb-backdrop hidden" id="fb-backdrop" onclick="closeFeedback()"></div>
+  <div class="fb-modal hidden" id="fb-modal" role="dialog" aria-modal="true" aria-label="Share feedback">
+
+    <!-- Header -->
+    <div class="fb-header">
+      <div class="fb-header-left">
+        <i class="ti ti-message-plus"></i>
+        <span>Share Feedback</span>
+      </div>
+      <div class="fb-header-actions">
+        <button class="fb-inbox-btn" onclick="openFeedbackInbox()" title="View all feedback">
+          <i class="ti ti-inbox"></i>
+          <span class="fb-inbox-count" id="fb-inbox-count">0</span>
+        </button>
+        <button class="fb-close-btn" onclick="closeFeedback()" aria-label="Close">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="fb-body">
+
+      <!-- Overall rating -->
+      <div class="fb-group">
+        <div class="fb-group-label">Overall experience</div>
+        <div class="fb-stars" id="fb-stars" role="group" aria-label="Star rating">
+          <button class="fb-star" data-val="1" onclick="setRating(1)" aria-label="1 star"><i class="ti ti-star"></i></button>
+          <button class="fb-star" data-val="2" onclick="setRating(2)" aria-label="2 stars"><i class="ti ti-star"></i></button>
+          <button class="fb-star" data-val="3" onclick="setRating(3)" aria-label="3 stars"><i class="ti ti-star"></i></button>
+          <button class="fb-star" data-val="4" onclick="setRating(4)" aria-label="4 stars"><i class="ti ti-star"></i></button>
+          <button class="fb-star" data-val="5" onclick="setRating(5)" aria-label="5 stars"><i class="ti ti-star"></i></button>
+        </div>
+        <div class="fb-rating-label" id="fb-rating-label">Tap to rate</div>
+      </div>
+
+      <!-- Category -->
+      <div class="fb-group">
+        <div class="fb-group-label">What is your feedback about?</div>
+        <div class="fb-cat-grid">
+          <button class="fb-cat-btn" data-cat="UI / Design"       onclick="selectFbCat(this)"><i class="ti ti-layout"></i> UI / Design</button>
+          <button class="fb-cat-btn" data-cat="Report accuracy"   onclick="selectFbCat(this)"><i class="ti ti-file-check"></i> Accuracy</button>
+          <button class="fb-cat-btn" data-cat="Performance"       onclick="selectFbCat(this)"><i class="ti ti-bolt"></i> Performance</button>
+          <button class="fb-cat-btn" data-cat="Feature request"   onclick="selectFbCat(this)"><i class="ti ti-bulb"></i> Feature idea</button>
+          <button class="fb-cat-btn" data-cat="Bug / Issue"       onclick="selectFbCat(this)"><i class="ti ti-bug"></i> Bug / Issue</button>
+          <button class="fb-cat-btn" data-cat="Other"             onclick="selectFbCat(this)"><i class="ti ti-dots"></i> Other</button>
+        </div>
+      </div>
+
+      <!-- Comment -->
+      <div class="fb-group">
+        <div class="fb-group-label">Tell us more <span class="fb-optional">(optional)</span></div>
+        <textarea class="fb-textarea" id="fb-comment" rows="3" maxlength="400"
+          placeholder="What worked well? What could be better?"></textarea>
+        <div class="fb-char-count"><span id="fb-char-used">0</span> / 400</div>
+      </div>
+
+      <!-- Reviewer name -->
+      <div class="fb-group">
+        <div class="fb-group-label">Your name <span class="fb-optional">(optional)</span></div>
+        <input class="fb-input" type="text" id="fb-name" placeholder="e.g. Rahul S." maxlength="60">
+      </div>
+
+      <div class="fb-error hidden" id="fb-error">
+        <i class="ti ti-alert-circle"></i> Please select a rating and at least one category.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="fb-footer">
+      <button class="fb-btn-cancel" onclick="closeFeedback()">Cancel</button>
+      <button class="fb-btn-submit" onclick="submitFeedback()">
+        <i class="ti ti-send"></i> Submit feedback
+      </button>
+    </div>
+  </div>
+
+  <!-- Feedback inbox modal -->
+  <div class="fb-inbox-modal hidden" id="fb-inbox-modal" role="dialog" aria-modal="true" aria-label="Feedback inbox">
+    <div class="fb-header">
+      <div class="fb-header-left"><i class="ti ti-inbox"></i> <span>Feedback Inbox</span></div>
+      <div class="fb-header-actions">
+        <button class="fb-close-btn" onclick="closeFeedbackInbox()" aria-label="Close"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div class="fb-inbox-body" id="fb-inbox-body"></div>
+    <div class="fb-footer">
+      <button class="fb-btn-cancel" onclick="clearAllFeedback()" style="color:#B91C1C;border-color:#FCA5A5">
+        <i class="ti ti-trash"></i> Clear all
+      </button>
+      <button class="fb-btn-submit" onclick="closeFeedbackInbox()">Close</button>
     </div>
   </div>
 

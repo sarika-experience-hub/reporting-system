@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure Fields – ReportIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/template-fields.css">
+</head>
+<body class="tf-body">
+
+  <!-- TOPBAR -->
+  <header class="tf-topbar">
+    <div class="tf-topbar-left">
+      <button class="tf-back-btn" onclick="goBack()" aria-label="Back to builder">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      </button>
+      <div class="tf-topbar-brand">
+        <i class="ti ti-report-analytics tf-brand-icon" aria-hidden="true"></i>
+        <span class="tf-brand-name">ReportIQ</span>
+      </div>
+      <div class="tf-topbar-divider"></div>
+      <div class="tf-topbar-info">
+        <span class="tf-topbar-step">Configure fields</span>
+        <span class="tf-topbar-tmpl" id="tmpl-name-display">New template</span>
+      </div>
+    </div>
+    <div class="tf-topbar-right">
+      <span class="tf-field-count" id="field-count">0 fields added</span>
+      <button class="tf-skip-btn" onclick="skipAndContinue()">Skip</button>
+      <button class="tf-save-btn" onclick="saveAndContinue()">
+        <i class="ti ti-check" aria-hidden="true"></i> Save &amp; continue
+      </button>
+    </div>
+  </header>
+
+  <!-- BODY LAYOUT -->
+  <div class="tf-layout">
+
+    <!-- LEFT: Field catalog -->
+    <aside class="tf-catalog">
+      <div class="tf-catalog-header">
+        <div class="tf-catalog-title">Field catalog</div>
+        <div class="tf-catalog-sub">Click <i class="ti ti-plus" style="font-size:11px"></i> to add to template</div>
+      </div>
+      <div class="tf-catalog-search-wrap">
+        <i class="ti ti-search tf-search-icon" aria-hidden="true"></i>
+        <input type="text" id="catalog-search" class="tf-search-input"
+               placeholder="Search fields…" oninput="searchCatalog(this.value)"
+               autocomplete="off">
+      </div>
+      <div class="tf-catalog-scroll" id="catalog-sections"></div>
+    </aside>
+
+    <!-- RIGHT: Active fields -->
+    <main class="tf-active">
+      <div class="tf-active-header">
+        <div>
+          <div class="tf-active-title">Template fields</div>
+          <div class="tf-active-sub">Drag to reorder · click a field to configure its settings</div>
+        </div>
+      </div>
+
+      <div class="tf-empty hidden" id="fields-empty">
+        <div class="tf-empty-icon"><i class="ti ti-forms" aria-hidden="true"></i></div>
+        <div class="tf-empty-title">No fields added yet</div>
+        <div class="tf-empty-sub">Browse the catalog on the left and click <strong>+</strong> to add fields to your template.</div>
+      </div>
+
+      <div class="tf-active-list" id="fields-active-list"></div>
+
+      <!-- ── Template Settings ──────────────────────────── -->
+      <div class="tf-settings-block">
+        <div class="tf-settings-title">
+          <i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>
+          Template settings
+        </div>
+
+        <div class="tf-settings-row">
+          <label class="tf-settings-label">
+            <i class="ti ti-building-bank" aria-hidden="true"></i> Account type
+          </label>
+          <div class="tf-settings-chips" id="tf-account-chips">
+            <span class="tf-stag active" data-field="account" data-val="All accounts" onclick="selectSettingTag(this)">All accounts</span>
+            <span class="tf-stag" data-field="account" data-val="Savings account" onclick="selectSettingTag(this)">Savings account</span>
+            <span class="tf-stag" data-field="account" data-val="Current account" onclick="selectSettingTag(this)">Current account</span>
+            <span class="tf-stag" data-field="account" data-val="Credit card" onclick="selectSettingTag(this)">Credit card</span>
+          </div>
+        </div>
+
+        <div class="tf-settings-row">
+          <label class="tf-settings-label">
+            <i class="ti ti-file-export" aria-hidden="true"></i> Output format
+          </label>
+          <div class="tf-settings-chips" id="tf-format-chips">
+            <span class="tf-stag active" data-field="format" data-val="PDF" onclick="selectSettingTag(this)">
+              <i class="ti ti-file-type-pdf" aria-hidden="true"></i> PDF
+            </span>
+            <span class="tf-stag" data-field="format" data-val="Excel" onclick="selectSettingTag(this)">
+              <i class="ti ti-file-type-xls" aria-hidden="true"></i> Excel
+            </span>
+            <span class="tf-stag" data-field="format" data-val="Both" onclick="selectSettingTag(this)">
+              <i class="ti ti-files" aria-hidden="true"></i> Both
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="js/template-fields.js"></script>
+</body>
+</html>

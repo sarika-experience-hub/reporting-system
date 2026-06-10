@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Parameters – ReportIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/custom-builder.css">
+</head>
+<body class="cb-body">
+
+  <!-- TOPBAR -->
+  <header class="cb-topbar">
+    <div class="cb-topbar-left">
+      <button class="cb-back-btn" onclick="goBack()" aria-label="Back to workspace">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      </button>
+      <div class="cb-topbar-brand">
+        <i class="ti ti-report-analytics cb-brand-icon" aria-hidden="true"></i>
+        <span class="cb-brand-name">ReportIQ</span>
+      </div>
+      <div class="cb-topbar-divider"></div>
+      <div class="cb-topbar-info">
+        <span class="cb-topbar-step">Custom parameters</span>
+        <span class="cb-topbar-report" id="cb-report-label">Account Statement</span>
+      </div>
+    </div>
+    <div class="cb-topbar-right">
+      <span class="cb-param-count" id="cb-param-count">0 custom params</span>
+      <button class="cb-cancel-btn" onclick="goBack()">Cancel</button>
+      <button class="cb-regen-btn" id="cb-regen-btn" onclick="regenReport()">
+        <i class="ti ti-refresh" aria-hidden="true"></i> Re-generate report
+      </button>
+    </div>
+  </header>
+
+  <!-- LAYOUT -->
+  <div class="cb-layout">
+
+    <!-- LEFT: Standard parameters (read-only) -->
+    <aside class="cb-std-panel">
+      <div class="cb-panel-header">
+        <div class="cb-panel-title">
+          <i class="ti ti-list-check"></i> Standard parameters
+        </div>
+        <div class="cb-panel-sub">These parameters are already part of your report</div>
+      </div>
+
+      <div class="cb-report-ctx" id="cb-report-ctx">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="cb-std-list" id="cb-std-list">
+        <!-- Populated by JS -->
+      </div>
+    </aside>
+
+    <!-- RIGHT: Custom parameters -->
+    <main class="cb-custom-panel">
+      <div class="cb-panel-header">
+        <div class="cb-panel-title">
+          <i class="ti ti-puzzle"></i> Add custom parameters
+        </div>
+        <div class="cb-panel-sub">Add fields that are specific to your needs — not available in the standard set</div>
+      </div>
+
+      <!-- Add form -->
+      <div class="cb-add-form">
+        <div class="cb-add-form-inner">
+          <div class="cb-input-wrap">
+            <i class="ti ti-tag cb-input-icon" aria-hidden="true"></i>
+            <input
+              type="text"
+              id="cb-param-input"
+              class="cb-param-input"
+              placeholder="Parameter name — e.g. Branch Code, IFSC, Customer Segment…"
+              maxlength="60"
+              autocomplete="off"
+              onkeydown="if(event.key==='Enter')addCustomParam()"
+            >
+          </div>
+          <button class="cb-add-btn" onclick="addCustomParam()" aria-label="Add parameter">
+            <i class="ti ti-plus" aria-hidden="true"></i> Add
+          </button>
+        </div>
+        <div class="cb-add-hint">Press Enter or click Add. You can add multiple parameters.</div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="cb-empty-state" id="cb-empty-state">
+        <div class="cb-empty-icon">
+          <i class="ti ti-puzzle-off"></i>
+        </div>
+        <div class="cb-empty-title">No custom parameters yet</div>
+        <div class="cb-empty-sub">Type a parameter name above and click <strong>Add</strong> to include it in your report.</div>
+        <div class="cb-examples">
+          <div class="cb-examples-label">Common examples:</div>
+          <div class="cb-examples-chips">
+            <span class="cb-example-chip" onclick="insertExample('Branch Code')">Branch Code</span>
+            <span class="cb-example-chip" onclick="insertExample('IFSC Code')">IFSC Code</span>
+            <span class="cb-example-chip" onclick="insertExample('Customer Segment')">Customer Segment</span>
+            <span class="cb-example-chip" onclick="insertExample('RM Name')">RM Name</span>
+            <span class="cb-example-chip" onclick="insertExample('Cost Centre')">Cost Centre</span>
+            <span class="cb-example-chip" onclick="insertExample('Regulatory Flag')">Regulatory Flag</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom params list -->
+      <div class="cb-custom-list" id="cb-custom-list" style="display:none">
+        <div class="cb-list-header">
+          <span class="cb-list-header-label">Added parameters</span>
+          <button class="cb-clear-all-btn" onclick="clearAllParams()">
+            <i class="ti ti-trash"></i> Clear all
+          </button>
+        </div>
+        <div id="cb-custom-items">
+          <!-- Items rendered by JS -->
+        </div>
+
+        <div class="cb-examples" style="margin-top:20px">
+          <div class="cb-examples-label">Add more:</div>
+          <div class="cb-examples-chips" id="cb-example-chips-bottom">
+            <span class="cb-example-chip" onclick="insertExample('Branch Code')">Branch Code</span>
+            <span class="cb-example-chip" onclick="insertExample('IFSC Code')">IFSC Code</span>
+            <span class="cb-example-chip" onclick="insertExample('Customer Segment')">Customer Segment</span>
+            <span class="cb-example-chip" onclick="insertExample('RM Name')">RM Name</span>
+            <span class="cb-example-chip" onclick="insertExample('Cost Centre')">Cost Centre</span>
+            <span class="cb-example-chip" onclick="insertExample('Regulatory Flag')">Regulatory Flag</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- FOOTER ACTION BAR -->
+  <footer class="cb-footer">
+    <div class="cb-footer-note" id="cb-footer-note">
+      <i class="ti ti-info-circle"></i>
+      <span>Custom parameters will be appended as a separate section in the re-generated report.</span>
+    </div>
+    <div class="cb-footer-actions">
+      <button class="cb-cancel-btn" onclick="goBack()">
+        <i class="ti ti-x"></i> Cancel
+      </button>
+      <button class="cb-regen-btn" id="cb-footer-regen-btn" onclick="regenReport()">
+        <i class="ti ti-refresh"></i> Re-generate report
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    // ── State ───────────────────────────────────────────────────────
+    const CUSTOM_PARAMS_KEY = 'reportiq_custom_params';
+
+    let ctx = { reportType: 'account-statement', period: 'Last month', accountType: 'All accounts', customParams: [] };
+
+    const STANDARD_PARAMS = [
+      { icon: 'ti-calendar',        label: 'Date range',       desc: 'Report period start and end' },
+      { icon: 'ti-building-bank',   label: 'Account type',     desc: 'Savings, current, credit card or all' },
+      { icon: 'ti-arrows-exchange', label: 'Transaction type', desc: 'Debit, credit, or both' },
+      { icon: 'ti-currency-rupee',  label: 'Currency',         desc: 'INR (default) or multi-currency' },
+      { icon: 'ti-filter',          label: 'Amount range',     desc: 'Min and max transaction amount' },
+      { icon: 'ti-tag',             label: 'Category',         desc: 'Spend category filter' },
+      { icon: 'ti-file-export',     label: 'Output format',    desc: 'PDF or Excel' },
+    ];
+
+    // ── Init ────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CUSTOM_PARAMS_KEY) || 'null');
+        if (saved) ctx = saved;
+      } catch { /* use defaults */ }
+
+      renderReportCtx();
+      renderStdParams();
+      renderCustomItems();
+      updateCount();
+    });
+
+    function capitalise(str) {
+      if (!str) return '';
+      return str.split(/[\s-]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    // ── Render report context badge ─────────────────────────────────
+    function renderReportCtx() {
+      const label = capitalise(ctx.reportType?.replace(/-/g, ' ') || 'Account Statement');
+      document.getElementById('cb-report-label').textContent = label;
+      document.getElementById('cb-report-ctx').innerHTML = `
+        <div class="cb-ctx-card">
+          <div class="cb-ctx-row">
+            <i class="ti ti-file-analytics cb-ctx-icon"></i>
+            <div class="cb-ctx-info">
+              <span class="cb-ctx-key">Report type</span>
+              <span class="cb-ctx-val">${label}</span>
+            </div>
+          </div>
+          <div class="cb-ctx-row">
+            <i class="ti ti-calendar cb-ctx-icon"></i>
+            <div class="cb-ctx-info">
+              <span class="cb-ctx-key">Period</span>
+              <span class="cb-ctx-val">${ctx.period || 'Last month'}</span>
+            </div>
+          </div>
+          <div class="cb-ctx-row">
+            <i class="ti ti-building-bank cb-ctx-icon"></i>
+            <div class="cb-ctx-info">
+              <span class="cb-ctx-key">Account</span>
+              <span class="cb-ctx-val">${ctx.accountType || 'All accounts'}</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Render standard params ──────────────────────────────────────
+    function renderStdParams() {
+      document.getElementById('cb-std-list').innerHTML = STANDARD_PARAMS.map(p => `
+        <div class="cb-std-item">
+          <div class="cb-std-item-icon-wrap">
+            <i class="ti ${p.icon} cb-std-item-icon"></i>
+          </div>
+          <div class="cb-std-item-body">
+            <span class="cb-std-item-label">${p.label}</span>
+            <span class="cb-std-item-desc">${p.desc}</span>
+          </div>
+          <i class="ti ti-check cb-std-check"></i>
+        </div>`).join('');
+    }
+
+    // ── Custom param management ─────────────────────────────────────
+    function addCustomParam() {
+      const input = document.getElementById('cb-param-input');
+      const label = input.value.trim();
+      if (!label) { input.focus(); return; }
+
+      // Prevent duplicates
+      if (ctx.customParams.some(p => p.label.toLowerCase() === label.toLowerCase())) {
+        input.classList.add('cb-input-error');
+        setTimeout(() => input.classList.remove('cb-input-error'), 600);
+        input.focus();
+        return;
+      }
+
+      ctx.customParams.push({ id: 'cp-' + Date.now(), label, value: '' });
+      input.value = '';
+      input.focus();
+      saveCtx();
+      renderCustomItems();
+      updateCount();
+    }
+
+    function removeCustomParam(id) {
+      ctx.customParams = ctx.customParams.filter(p => p.id !== id);
+      saveCtx();
+      renderCustomItems();
+      updateCount();
+    }
+
+    function clearAllParams() {
+      if (!ctx.customParams.length) return;
+      ctx.customParams = [];
+      saveCtx();
+      renderCustomItems();
+      updateCount();
+    }
+
+    function insertExample(label) {
+      const input = document.getElementById('cb-param-input');
+      input.value = label;
+      input.focus();
+      addCustomParam();
+    }
+
+    function renderCustomItems() {
+      const list      = document.getElementById('cb-custom-list');
+      const empty     = document.getElementById('cb-empty-state');
+      const container = document.getElementById('cb-custom-items');
+
+      if (!ctx.customParams.length) {
+        list.style.display  = 'none';
+        empty.style.display = 'flex';
+        return;
+      }
+
+      list.style.display  = 'block';
+      empty.style.display = 'none';
+
+      container.innerHTML = ctx.customParams.map((p, i) => `
+        <div class="cb-custom-item" id="cpi-${p.id}">
+          <div class="cb-custom-item-num">${i + 1}</div>
+          <div class="cb-custom-item-body">
+            <span class="cb-custom-item-label">${escHtml(p.label)}</span>
+            <span class="cb-custom-item-badge">Custom</span>
+          </div>
+          <button class="cb-custom-item-remove" onclick="removeCustomParam('${p.id}')" title="Remove" aria-label="Remove ${escHtml(p.label)}">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
+        </div>`).join('');
+    }
+
+    function updateCount() {
+      const n = ctx.customParams.length;
+      const text = n === 0 ? '0 custom params' : `${n} custom param${n > 1 ? 's' : ''} added`;
+      document.getElementById('cb-param-count').textContent = text;
+
+      // Update regen button state
+      const regenBtns = document.querySelectorAll('.cb-regen-btn');
+      regenBtns.forEach(btn => {
+        btn.disabled = false; // always enabled so user can regen even with 0 custom params
+      });
+
+      // Update footer note
+      const note = document.getElementById('cb-footer-note');
+      if (note) {
+        note.innerHTML = n > 0
+          ? `<i class="ti ti-check-circle" style="color:var(--az-green)"></i>
+             <span><strong>${n} custom parameter${n > 1 ? 's' : ''}</strong> will be appended to the re-generated report.</span>`
+          : `<i class="ti ti-info-circle"></i>
+             <span>Add at least one custom parameter above, then re-generate. Or re-generate without custom params.</span>`;
+      }
+    }
+
+    function saveCtx() {
+      localStorage.setItem(CUSTOM_PARAMS_KEY, JSON.stringify(ctx));
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Navigation ──────────────────────────────────────────────────
+    function goBack() {
+      window.location.href = 'reporting-workspace.html';
+    }
+
+    function regenReport() {
+      saveCtx();
+      localStorage.setItem('reportiq_custom_done', 'done');
+      window.location.href = 'reporting-workspace.html';
+    }
+  </script>
+</body>
+</html>
